@@ -1,4 +1,3 @@
-# SignDetectionWebApp
 
 # SignDetectionWebApp
 
