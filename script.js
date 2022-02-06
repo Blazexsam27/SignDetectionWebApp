@@ -5,6 +5,9 @@ const enableWebcamButton = document.getElementById("webcamButton");
 const heading = document.getElementById("heading");
 const statsHeading = document.getElementById("statsHeading");
 const statistics = document.getElementById("statsView");
+const imageContainer = document.getElementById("helperImageContainer");
+const results = document.getElementById("results");
+const recogsWords = document.getElementById("recogWords");
 const classLabels = [
   "A",
   "B",
@@ -68,6 +71,8 @@ function enableCam(event) {
   statsHeading.classList.remove("removed");
   statsHeading.classList.add("stats");
   heading.classList.add("removed");
+  imageContainer.style.display = "none";
+  results.style.display = "block";
   // getUsermedia parameters to force video but not audio.
   const constraints = {
     video: true,
@@ -157,6 +162,17 @@ async function detectTFMOBILE(imgToPredict) {
   tf4d.dispose();
 }
 
+const buildSubstrings = (word) => {
+  let i, j;
+  const res = [];
+  for (i = 0; i < word.length; i++) {
+    for (j = i + 1; j < word.length + 1; j++) {
+      res.push(word.slice(i, j));
+    }
+  }
+  return res;
+};
+
 function renderPredictionBoxes(
   predictionBoxes,
   predictionClasses,
@@ -166,6 +182,7 @@ function renderPredictionBoxes(
     liveView.removeChild(children[i]);
   }
   children.splice(0);
+  let counter = 4;
   for (let i = 0; i < 99; i++) {
     const minY = (predictionBoxes[i * 4] * vidHeight + yStart).toFixed(0);
     const minX = (predictionBoxes[i * 4 + 1] * vidWidth + xStart).toFixed(0);
@@ -204,8 +221,19 @@ function renderPredictionBoxes(
         "% " +
         "Predicted Class: " +
         classLabels[predicted_class - 1];
-      statistics.innerHTML = statsView;
 
+      recognitions = document.getElementById("recogs");
+      if (i % counter == 0) {
+        if (recognitions.innerHTML.length > 5) {
+          let res = buildSubstrings(recognitions.innerHTML);
+          console.log(res);
+          recognitions.innerHTML = "";
+        }
+        if (score > 70) {
+          recognitions.innerHTML += classLabels[predicted_class - 1];
+        }
+      }
+      statistics.innerHTML = statsView;
       liveView.appendChild(highlighter);
       children.push(highlighter);
     }
