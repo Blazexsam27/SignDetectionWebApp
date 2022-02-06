@@ -1,7 +1,7 @@
 
 # SignDetectionWebApp
 
-Sign Detection Web Application AKA jesture is a realtime time object detection application built using vanilla javascript, html and css, the deep learning model is trained on 598 
+Sign Detection Web Application AKA jesture is a realtime time object detection application built using vanilla javascript, html and css, the deep learning model is trained on 3000 
 different images of hand signs (english alphabets A - Z) using tensorflow (85% avg accuracy rate).
 The model have in total 3 shards which gives output in following format outputArray[4] = accuracy score, outputArray[2] = predicted classes, outputArray[5] = bouding box coordinates.
 
