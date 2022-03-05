@@ -35,6 +35,10 @@ const classLabels = [
   "X",
   "Y",
   "Z",
+  "Good Job",
+  "Got That",
+  "No",
+  "Thank You",
 ];
 
 const vw = Math.max(
@@ -107,7 +111,11 @@ function enableCam(event) {
 
 var model = undefined;
 model_url =
-  "https://raw.githubusercontent.com/Blazexsam27/SignDetectionWebApp/master/model/model.json";
+  "https://raw.githubusercontent.com/Blazexsam27/SignDetectionWebApp/master/tuned_model/model.json";
+
+// https://raw.githubusercontent.com/Blazexsam27/SignDetectionWebApp/master/tuned_model/model.json
+// https://raw.githubusercontent.com/Blazexsam27/SignDetectionWebApp/master/model/model.json
+
 //Call load function
 asyncLoadModel(model_url);
 //Function Loads the GraphModel type model of
@@ -152,14 +160,16 @@ async function detectTFMOBILE(imgToPredict) {
   let predictions = await model.executeAsync(tf4d);
 
   renderPredictionBoxes(
-    predictions[3].dataSync(),
-    predictions[4].dataSync(),
-    predictions[5].dataSync()
+    predictions[7].dataSync(),
+    predictions[6].dataSync(),
+    predictions[0].dataSync()
   );
   tfImg.dispose();
   smallImg.dispose();
   resized.dispose();
   tf4d.dispose();
+  console.log(predictions.length);
+  console.log(predictions[0].array());
 }
 
 const buildSubstrings = (word) => {
@@ -193,7 +203,7 @@ function renderPredictionBoxes(
     const width_ = (maxX - minX).toFixed(0);
     const height_ = (maxY - minY).toFixed(0);
 
-    if (score > 50 && score < 100) {
+    if (score > 65 && score < 100) {
       const highlighter = document.createElement("div");
       highlighter.setAttribute("class", "highlighter");
       highlighter.style =
@@ -225,12 +235,12 @@ function renderPredictionBoxes(
       recognitions = document.getElementById("recogs");
       if (i % counter == 0) {
         if (recognitions.innerHTML.length > 5) {
-          let res = buildSubstrings(recognitions.innerHTML);
-          console.log(res);
-          recognitions.innerHTML = "";
+          // let res = buildSubstrings(recognitions.innerHTML);
+          // console.log(res);
+          // recognitions.innerHTML = "";
         }
-        if (score > 70) {
-          recognitions.innerHTML += classLabels[predicted_class - 1];
+        if (score > 65) {
+          recognitions.innerHTML = classLabels[predicted_class - 1];
         }
       }
       statistics.innerHTML = statsView;
